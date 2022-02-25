@@ -52,7 +52,7 @@ authRouter.post('/signup', makeRequired({ fullName: 1, email: 1, password: 1 }),
 })
 
 
-authRouter.post('/forgot-password', isAuth, makeRequired({ newPassword: 1 }), async (req: any, res) => {
+authRouter.post('/change-password', isAuth, makeRequired({ newPassword: 1 }), async (req: any, res) => {
   try {
     const currentUser = req.user;
     const { newPassword } = req.body;
