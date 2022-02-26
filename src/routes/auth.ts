@@ -63,7 +63,8 @@ authRouter.post('/change-password', isAuth, makeRequired({ newPassword: 1 }), as
       res.json({ message: "User Updated Successfully" })
     } else res.json({ message: "Password must be at least 8 characters and  contain lower case, upper case, numbers and special characters" })
   } catch (e) {
-
+    console.log(e)
+    res.status(500).send();
   }
 })
 
