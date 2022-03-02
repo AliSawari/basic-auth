@@ -7,7 +7,6 @@ export default function makeRequired(requiredParams: string[]) {
   }
 
   return async function (req: Request, res: Response, next: NextFunction) {
-    console.log(req.body)
     if (req.body && Object.keys(req.body).length) {
       const missing = [];
       for (let r in required) {
