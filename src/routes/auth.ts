@@ -8,31 +8,15 @@ import { SECRET_KEY, TOKEN_EXPIRE } from '../config';
 import { scorePassword } from '../helpers/passwordScore';
 import isAuth from '../middlewares/isAuth';
 import { generateHash } from '../middlewares/generateHash';
+import { loginController } from '../controllers/auth'
 
 const authRouter = Router();
 
-authRouter.post('/login', makeRequired({ email: 1, password: 1 }), async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (validateEmail(email)) {
-      const existing = await User.findOne({ email }).lean()
-      if (existing) {
-        const isMatch = await compare(password, existing.password);
-        if (isMatch) {
-          const token = sign(existing, SECRET_KEY, { expiresIn: TOKEN_EXPIRE });
-          res.json({ message: "Login Successful", token })
-        } else res.json({ message: "Wrong Password" })
-      } else res.json({ message: "User Not Found" })
-    } else res.json({ message: "Please provide a valid email" });
-  } catch (e) {
-    console.log(e)
-    res.status(500).send();
-  }
-})
+authRouter.post('/login', makeRequired(['email', 'password']), loginController);
 
 
 
-authRouter.post('/signup', makeRequired({ fullName: 1, email: 1, password: 1 }), async (req, res) => {
+authRouter.post('/signup', makeRequired(['fullName', 'email', 'password']), async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
     if (validateEmail(email)) {
@@ -52,7 +36,7 @@ authRouter.post('/signup', makeRequired({ fullName: 1, email: 1, password: 1 }),
 })
 
 
-authRouter.post('/change-password', isAuth, makeRequired({ newPassword: 1 }), async (req: any, res) => {
+authRouter.post('/change-password', isAuth, makeRequired(['newPassword']), async (req: any, res) => {
   try {
     const currentUser = req.user;
     const { newPassword } = req.body;
